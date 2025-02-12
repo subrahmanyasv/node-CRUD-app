@@ -55,6 +55,7 @@ Server will run on **http://localhost:8000** 🚀
 ---
 
 ## 🔄 API Endpoints
+Currently, this project is not connected to a cloud database. To use it, you must set up a local database.
 ### **1️⃣ Get All Users**
 **GET** `/api/users`
 ```json
