@@ -8,6 +8,9 @@ const router = express.Router();
 router.get("/" , async ( req , res ) => {
     try{
         const users = await User.find();
+        if(!users){
+            res.status(200).send("No users found!");
+        }
         res.status(200).json(users);
     }catch( err ){
         res.status(500).json({ message : err.message });
@@ -28,8 +31,17 @@ router.get("/:id" , async ( req , res ) => {
 //Router to create a new user.
 router.post("/" , async ( req , res ) => {
     try{
+        if(!req.body.firstName || !req.body.email || !req.body.age || !req.body.lastName){
+            res.status(400).send("All fields are mandatory");
+        }
+        const data = {
+            firstName : String(req.body.firstName).trim(),
+            lastName : String(req.body.lastName).trim(),
+            email : String(req.body.email).trim(),
+            age: Number(req.age)
+        }
         const user = await User.create(req.body);
-        res.status(200).send("User created successfully");
+        res.status(200).send(`User created successfully with userId: ${user._id}`);
     }catch( err ){
         res.status(500).json({ message : err.message });
     }
