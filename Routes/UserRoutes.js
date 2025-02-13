@@ -9,7 +9,7 @@ router.get("/" , async ( req , res ) => {
     try{
         const users = await User.find();
         if(!users){
-            res.status(200).send("No users found!");
+            return res.status(200).json({ message : "User not found!" });
         }
         res.status(200).json(users);
     }catch( err ){
@@ -22,6 +22,9 @@ router.get("/" , async ( req , res ) => {
 router.get("/:id" , async ( req , res ) => {
     try{
         const user = await User.findById(req.params.id);
+        if( !user ){
+            return res.status(200).json({ message : "User not found!" });
+        }
         res.status(200).json(user);
     }catch( err ){
         res.status(500).json({ message : err.message });
@@ -32,16 +35,16 @@ router.get("/:id" , async ( req , res ) => {
 router.post("/" , async ( req , res ) => {
     try{
         if(!req.body.firstName || !req.body.email || !req.body.age || !req.body.lastName){
-            res.status(400).send("All fields are mandatory");
+            return res.status(400).json({ message : "All fields are required!" });
         }
         const data = {
             firstName : String(req.body.firstName).trim(),
             lastName : String(req.body.lastName).trim(),
             email : String(req.body.email).trim(),
-            age: Number(req.age)
+            age: Number(req.body.age)
         }
         const user = await User.create(req.body);
-        res.status(200).send(`User created successfully with userId: ${user._id}`);
+        res.status(200).json({ message : `User created successfully with id: ${user._id}` });
     }catch( err ){
         res.status(500).json({ message : err.message });
     }
@@ -51,7 +54,7 @@ router.post("/" , async ( req , res ) => {
 router.delete("/:id" , async ( req , res ) => {
     try{
         const user = await User.findByIdAndDelete(req.params.id);
-        res.status(200).send("User deleted successfully");
+        res.status(200).json({ message : `User deleted successfully with id: ${user._id}` });
     }catch( err ){
         res.status(500).json({ message : err.message });
     }
@@ -62,7 +65,7 @@ router.delete("/:id" , async ( req , res ) => {
 router.patch("/:id" , async ( req , res ) => {   
     try{
         const user = await User.findByIdAndUpdate(req.params.id , req.body , { new : true });
-        res.status(200).send("User updated successfully");
+        res.status(200).json({ message : `User updated successfully with id: ${user._id}` });
     }catch( err ){
         res.status(500).json({ message : err.message });
     }
