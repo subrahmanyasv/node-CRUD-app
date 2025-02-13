@@ -1,5 +1,6 @@
 import express from "express";
 import { User } from "../Model/SchemaModel.js";
+import { validateUser } from "../Modules/validateUser.js";
 
 //Middleware to handle all routes.
 const router = express.Router();
@@ -32,11 +33,8 @@ router.get("/:id" , async ( req , res ) => {
 })
 
 //Router to create a new user.
-router.post("/" , async ( req , res ) => {
+router.post("/" , validateUser , async ( req , res ) => {
     try{
-        if(!req.body.firstName || !req.body.email || !req.body.age || !req.body.lastName){
-            return res.status(400).json({ message : "All fields are required!" });
-        }
         const data = {
             firstName : String(req.body.firstName).trim(),
             lastName : String(req.body.lastName).trim(),
